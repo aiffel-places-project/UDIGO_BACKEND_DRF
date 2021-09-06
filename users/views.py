@@ -14,6 +14,13 @@ from django.forms.models import model_to_dict
 SOCIAL_TYPE = ["kakao", "naver", "google"]
 
 
+class FakeKakaoResponse:
+    response = {
+        "id": 12345,
+        "properties": {"nickname": "test_user"},
+    }
+
+
 class LoginView(APIView):
     def post(self, request):
         try:
@@ -26,9 +33,8 @@ class LoginView(APIView):
                     {"MESSAGE": "INVALID_TOKEN"}, status=status.HTTP_400_BAD_REQUEST
                 )
 
-            user_data = {"social_type": SOCIAL_TYPE.index(social_type)}
-
             if social_type == "kakao":
+                user_data = {"social_type": SOCIAL_TYPE.index(social_type)}
                 kakao = OauthKakao()
                 valid_result = kakao.get_access_token_info(access_token=token)
                 if valid_result["code"] == 200:
@@ -42,6 +48,7 @@ class LoginView(APIView):
                     )
 
             elif social_type == "google":
+                user_data = {"social_type": SOCIAL_TYPE.index(social_type)}
                 google = OauthGoogle()
                 valid_result = google.get_token_info(token=token)
                 if valid_result["code"] == 200:
@@ -55,22 +62,28 @@ class LoginView(APIView):
             elif social_type == "apple":
                 pass
 
+            elif social_type.split("_")[0] == "test":
+                if social_type.split("_")[1] == "kakao":
+                    user_data = {"social_type": 0}
+                    user_data["social_id"] = str(FakeKakaoResponse.response["id"])
+                    user_data["nickname"] = FakeKakaoResponse.response["properties"][
+                        "nickname"
+                    ]
             else:
                 return Response(
                     {"MESSAGE": "INVALID_SOCIAL_TYPE"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
             # sign in
             user = User.objects.filter(
-                social_type=user_data["social_type"], social_id=user_data["id"]
+                social_type=user_data["social_type"], social_id=user_data["social_id"]
             )
             if user.exists():
                 user = user.values()[0]
-                user["social_type"] = SOCIAL_TYPE[user["social_type"]]
-                serializer = UserSerializer(user)
+                serializer = UserSerializer(data=user)
                 if serializer.is_valid():
                     login = serializer.data
+                    login["social_type"] = SOCIAL_TYPE[login["social_type"]]
                     return Response(login, status=status.HTTP_200_OK)
             # sign up
             else:
@@ -78,6 +91,7 @@ class LoginView(APIView):
                 if serializer.is_valid():
                     create_user = serializer.save()
                     create_user = UserSerializer(create_user).data
+                    create_user["social_type"] = SOCIAL_TYPE[create_user["social_type"]]
                     return Response(create_user, status=status.HTTP_201_CREATED)
                 else:
                     return Response(
