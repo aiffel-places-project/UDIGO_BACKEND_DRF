@@ -1,12 +1,12 @@
 from rest_framework.test import (
     APIClient,
     APITestCase,
-    APIRequestFactory,
-    RequestsClient,
 )
 from rest_framework import status
 from .serializers import UserSerializer
 from .models import User
+
+# from unittest.mock import patch, MagicMock
 
 
 class SocialSignUpTest(APITestCase):
