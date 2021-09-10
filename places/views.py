@@ -9,7 +9,7 @@ from .models import PlaceImage
 from users.models import User
 from .serializers import PlaceImageSerializer
 
-
+# ClassificationView 서버 분리전
 class ClassificationView(APIView):
     # 이미지 리사이즈 함수
     def _resize_image(self, image_path, size):
