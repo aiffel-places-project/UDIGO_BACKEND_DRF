@@ -5,6 +5,7 @@ on:
     paths-ignore:
     - '.gitignore'
     - '**.md'
+    - '**.yml'
 
 jobs:
   lint:
