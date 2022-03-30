@@ -10,6 +10,10 @@ on:
   push:
     branches: 
     - main
+    paths-ignore:
+    - '.gitignore'
+    - '**.md'
+    - '**.yml'
 
 jobs:
   build:
