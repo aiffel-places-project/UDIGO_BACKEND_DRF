@@ -389,3 +389,5 @@ server_settings.py
 
 .dockerignore
 .env
+
+.vscode/
