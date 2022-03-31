@@ -18,7 +18,7 @@ services:
     image: mysql:5.7.22
     container_name: udigo-db
     environment:
-      MYSQL_DATABASE: admin
+      MYSQL_DATABASE: udigo
       MYSQL_USER: root
       MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root
