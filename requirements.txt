@@ -2,3 +2,8 @@ django
 djangorestframework
 python-decouple
 mysqlclient
+pytest
+pytest-django
+pytest-cov
+pytest-sugar
+mixer
