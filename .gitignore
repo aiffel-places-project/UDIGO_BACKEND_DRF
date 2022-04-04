@@ -391,3 +391,4 @@ server_settings.py
 .env
 
 .vscode/
+logs/

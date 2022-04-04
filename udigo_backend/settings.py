@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 from decouple import config, Csv
 
@@ -21,6 +22,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1", cast=Csv())
 # Application definition
 
 INSTALLED_APPS = [
+    "django.contrib.sites",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -29,18 +31,28 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = ["rest_framework"]
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    "rest_framework.authtoken",
+    "corsheaders",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.kakao",
+]
 DJANGO_APPS = ["common", "users"]
 INSTALLED_APPS += THIRD_PARTY_APPS + DJANGO_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "request_logging.middleware.LoggingMiddleware",
 ]
 
 ROOT_URLCONF = "udigo_backend.urls"
@@ -122,7 +134,72 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Rest Framework
-REST_FRAMEWORK = {}
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+}
 
 # Auth User Model
 AUTH_USER_MODEL = "users.User"
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
+
+# JWT
+REST_USE_JWT = True
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ALGORITHM": "HS256",
+    "ROTATE_REFRESH_TOKENS": True,
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+# Social Login
+SITE_ID = 1
+KAKAO_PROFILE_URL = "https://kapi.kakao.com/v2/user/me"
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    # Formatter
+    "formatters": {
+        "basic_format": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+    },
+    # Handler
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "./logs/app.log",
+            "maxBytes": 1024 * 1024 * 15,  # 15MB
+            "backupCount": 10,
+            "formatter": "basic_format",
+        },
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "basic_format",
+        },
+    },
+    # logger
+    "loggers": {
+        "users": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+        },
+        "django.request": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}

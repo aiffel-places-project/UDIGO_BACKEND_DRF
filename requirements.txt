@@ -1,5 +1,9 @@
 django
 djangorestframework
+django-cors-headers
+django-allauth
+django-request-logging
+dj-rest-auth
 python-decouple
 mysqlclient
 pytest
