@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: udigo-backend
-    command: "python manage.py runserver"
+    command: "python manage.py runserver 0.0.0.0:8000"
     ports: 
       - "8000:8000"
     restart: unless-stopped
@@ -18,7 +18,7 @@ services:
     image: mysql:5.7.22
     container_name: udigo-db
     environment:
-      MYSQL_DATABASE: udigo
+      MYSQL_DATABASE: admin
       MYSQL_USER: root
       MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root

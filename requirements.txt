@@ -1,5 +1,6 @@
 django
 djangorestframework
+djangorestframework-simplejwt
 django-cors-headers
 django-allauth
 django-request-logging
@@ -10,4 +11,5 @@ pytest
 pytest-django
 pytest-cov
 pytest-sugar
+pytest-mock
 mixer

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
+    "rest_framework_simplejwt",
     "corsheaders",
     "allauth",
     "allauth.account",
@@ -82,10 +83,10 @@ WSGI_APPLICATION = "udigo_backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
+        "HOST": config("DB_HOST"),
         "NAME": config("DB_NAME"),
         "USER": config("DB_USER"),
         "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
         "PORT": config("DB_PORT"),
     }
 }
@@ -145,6 +146,12 @@ REST_FRAMEWORK = {
 # Auth User Model
 AUTH_USER_MODEL = "users.User"
 
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -161,8 +168,15 @@ SIMPLE_JWT = {
 
 # Social Login
 SITE_ID = 1
+# KAKAO
+KAKAO_REST_API_KEY = config("KAKAO_REST_API_KEY")
+KAKAO_SECRET_KEY = config("KAKAO_SECRET_KEY")
+KAKAO_REDIRECT_URI = config("KAKAO_REDIRECT_URI")
+KAKAO_CONSENT_URL = f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}"\
+                    f"&redirect_uri={KAKAO_REDIRECT_URI}&response_type=code"
 KAKAO_PROFILE_URL = "https://kapi.kakao.com/v2/user/me"
-
+KAKAO_ACCESS_URL = f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="\
+                 f"{KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&client_secret={KAKAO_SECRET_KEY}&code="
 # Logging
 LOGGING = {
     "version": 1,
