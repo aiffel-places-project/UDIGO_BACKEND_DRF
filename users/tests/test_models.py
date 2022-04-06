@@ -1,8 +1,8 @@
 import pytest
 from mixer.backend.django import mixer
-from common.utils.tests import user_model
+from common.utils.tests import user_model, pytestmark
 
-pytestmark = pytest.mark.django_db
+# pytestmark = pytest.mark.django_db
 
 
 def test_create_user_model_by_mixer(user_model):
@@ -18,5 +18,5 @@ def test_create_user_model_manually(user_model):
 
 
 def test_create_superuser_model(user_model):
-    superuser_model = user_model.objects.create_superuser_model(email="admin@admin.com")
+    superuser_model = user_model.objects.create_superuser(email="admin@admin.com")
     assert superuser_model.is_admin is True
