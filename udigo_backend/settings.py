@@ -83,7 +83,7 @@ WSGI_APPLICATION = "udigo_backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "HOST": config("DB_HOST", "127.0.0.1"),
+        "HOST": config("DB_HOST", "db"),
         "NAME": config("DB_NAME", "admin"),
         "USER": config("DB_USER", "root"),
         "PASSWORD": config("DB_PASSWORD", "root"),
