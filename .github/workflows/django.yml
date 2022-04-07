@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.8, 3.9]
 
     services:
       db:
@@ -23,15 +23,22 @@ jobs:
           - "3306:3306"
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Run Tests
-      run: |
-        pytest
+      - uses: actions/checkout@v3
+      - name: Create .env File
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          envkey_KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
+          envkey_KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+          envkey_KAKAO_SECRET_KEY: ${{ secrets.KAKAO_SECRET_KEY }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Tests
+        run: |
+          pytest
