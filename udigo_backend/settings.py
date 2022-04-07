@@ -172,11 +172,15 @@ SITE_ID = 1
 KAKAO_REST_API_KEY = config("KAKAO_REST_API_KEY")
 KAKAO_SECRET_KEY = config("KAKAO_SECRET_KEY")
 KAKAO_REDIRECT_URI = config("KAKAO_REDIRECT_URI")
-KAKAO_CONSENT_URL = f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}"\
-                    f"&redirect_uri={KAKAO_REDIRECT_URI}&response_type=code"
+KAKAO_CONSENT_URL = (
+    f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}"
+    f"&redirect_uri={KAKAO_REDIRECT_URI}&response_type=code"
+)
 KAKAO_PROFILE_URL = "https://kapi.kakao.com/v2/user/me"
-KAKAO_ACCESS_URL = f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="\
-                 f"{KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&client_secret={KAKAO_SECRET_KEY}&code="
+KAKAO_ACCESS_URL = (
+    f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="
+    f"{KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&client_secret={KAKAO_SECRET_KEY}&code="
+)
 # Logging
 LOGGING = {
     "version": 1,
