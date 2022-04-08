@@ -28,7 +28,6 @@ jobs:
           DATABASE_NAME: "admin"
           DATABASE_USERNAME: "root"
           DATABASE_PASSWORD: "root"
-          DATABASE_SCRIPT: "script.sql"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
