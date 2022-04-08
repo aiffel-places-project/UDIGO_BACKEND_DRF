@@ -23,7 +23,7 @@ class User(AbstractBaseUser, CommonModel):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["social_type", "nickname"]
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email
