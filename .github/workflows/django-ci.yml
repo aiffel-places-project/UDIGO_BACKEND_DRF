@@ -1,8 +1,8 @@
-name: Django CI
+name: Django Test CI
 
 on:
   push:
-    branches: [test/actions]
+    branches: [main]
 
 jobs:
   build:
