@@ -7,6 +7,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7.22
+        env:
+          MYSQL_DATABASE: admin
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: root
+        port:
+          - 3306
+
     strategy:
       matrix:
         python-version: [3.8, 3.9]
@@ -20,14 +31,12 @@ jobs:
           envkey_KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
           envkey_KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
           envkey_KAKAO_SECRET_KEY: ${{ secrets.KAKAO_SECRET_KEY }}
-      - name: Mysql Setup
-        uses: gtadam/mysql-deploy-action@v1
-        with:
-          DATABASE_HOST: "localhost"
-          DATABASE_PORT: "3306"
-          DATABASE_NAME: "admin"
-          DATABASE_USERNAME: "root"
-          DATABASE_PASSWORD: "root"
+      - name: Mysql connection
+        run: |
+          mysql --version
+          sudo apt-get install -y mysql-client
+          sudo service mysql start
+          mysql -uroot -proot -e "SHOW DATABASES"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
