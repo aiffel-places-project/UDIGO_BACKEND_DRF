@@ -11,17 +11,6 @@ jobs:
       matrix:
         python-version: [3.8, 3.9]
 
-    services:
-      db:
-        image: mysql:5.7.22
-        env:
-          MYSQL_DATABASE: admin
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - "3306:3306"
-
     steps:
       - uses: actions/checkout@v3
       - name: Create .env File
@@ -31,6 +20,15 @@ jobs:
           envkey_KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
           envkey_KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
           envkey_KAKAO_SECRET_KEY: ${{ secrets.KAKAO_SECRET_KEY }}
+      - name: Mysql Setup
+        uses: gtadam/mysql-deploy-action@v1
+        with:
+          DATABASE_HOST: "localhost"
+          DATABASE_PORT: "3306"
+          DATABASE_NAME: "admin"
+          DATABASE_USERNAME: "root"
+          DATABASE_PASSWORD: "root"
+          DATABASE_SCRIPT: "script.sql"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
