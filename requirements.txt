@@ -1,4 +1,5 @@
 django
+django-resized
 djangorestframework
 djangorestframework-simplejwt
 django-cors-headers
