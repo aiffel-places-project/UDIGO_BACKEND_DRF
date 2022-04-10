@@ -2,74 +2,73 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
+from common.models import CommonModel
 
 
-class PlaceImage(models.Model):
-    place_name = models.CharField(max_length=20)
+class InferredPlaceImage(CommonModel):
+    predicted_place_name = models.CharField(max_length=20, verbose_name=_("예측 장소 이름"))
     image = ResizedImageField(
-        size=[600, 600], quality=95, upload_to="places/%Y/%m/%d", blank=True
+        size=[600, 600],
+        quality=95,
+        upload_to="places/%Y/%m/%d",
+        blank=True,
+        verbose_name=_("저장 이미지"),
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("회원")
+    )
+
+    class Meta:
+        db_table = "inferred place"
 
 
-class TourPlace(models.Model):
-    address = models.CharField(max_length=300, null=True)
-    areacode = models.PositiveSmallIntegerField()
-    cat1 = models.CharField(max_length=50)
-    cat2 = models.CharField(max_length=50)
-    cat3 = models.CharField(max_length=50)
-    content_type_id = models.PositiveSmallIntegerField()
-    createdtime = models.CharField(max_length=100)
-    image1 = models.TextField(null=True)
-    image2 = models.TextField(null=True)
-    map_x = models.DecimalField(max_digits=9, decimal_places=6)
-    map_y = models.DecimalField(max_digits=9, decimal_places=6)
-    modifiedtime = models.CharField(max_length=100)
-    sigungu_code = models.PositiveSmallIntegerField()
-    telephone = models.CharField(max_length=100, null=True)
-    title = models.CharField(max_length=200)
-    overview = models.TextField(null=True)
-    zipcode = models.IntegerField(null=True)
-    homepage = models.TextField(null=True)
-
-    user_like = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="user_like_tour_places_set", blank=True
+class TourPlace(CommonModel):
+    address = models.CharField(max_length=300, null=True, verbose_name=_("주소"))
+    areacode = models.PositiveSmallIntegerField(verbose_name=_("지역번호"))
+    cat1 = models.CharField(max_length=50, verbose_name=_("카테고리1"))
+    cat2 = models.CharField(max_length=50, verbose_name=_("카테고리2"))
+    cat3 = models.CharField(max_length=50, verbose_name=_("카테고리3"))
+    content_type_id = models.PositiveSmallIntegerField(verbose_name=_("컨텐츠 유형 번호"))
+    image1 = models.TextField(null=True, verbose_name=_("이미지1"))
+    image2 = models.TextField(null=True, verbose_name=_("이미지2"))
+    map_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=_("x좌표"))
+    map_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=_("y좌표"))
+    created_time = models.CharField(max_length=100, verbose_name=_("생성 시간"))
+    modifiedtime = models.CharField(max_length=100, verbose_name=_("수정 시간"))
+    sigungu_code = models.PositiveSmallIntegerField(verbose_name=_("시군구 코드"))
+    telephone = models.CharField(max_length=100, null=True, verbose_name=_("전화번호"))
+    title = models.CharField(max_length=200, verbose_name=_("장소 이름"))
+    overview = models.TextField(null=True, verbose_name=_("오버뷰"))
+    zipcode = models.IntegerField(null=True, verbose_name=_("우편번호"))
+    homepage = models.TextField(null=True, verbose_name=_("홈페이지"))
+    like = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="user_like_tour_places_set",
+        blank=True,
+        verbose_name=_("좋아요"),
     )
 
     class Meta:
         db_table = "tour_places"
 
 
-class KakaoPlace(models.Model):
-    title = models.CharField(max_length=200)  # place_name
-    place_url = models.CharField(max_length=500)
-    category_name = models.CharField(max_length=300)
-    category_group_code = models.CharField(max_length=100)
-    category_group_name = models.CharField(max_length=100)
-    tel = models.CharField(max_length=100)  # phone
-    address = models.CharField(max_length=300)  # address_name
-    road_address = models.CharField(max_length=300)  # road_address_name
-    mapx = models.DecimalField(max_digits=9, decimal_places=6)  # x
-    mapy = models.DecimalField(max_digits=9, decimal_places=6)  # y
-
-    user_like = models.ManyToManyField(
-        User, through="UserLikeKakaoPlace", related_name="user_like_kakao_places_set"
+class KakaoPlace(CommonModel):
+    title = models.CharField(max_length=200, verbose_name=_("장소 이름"))
+    place_url = models.CharField(max_length=500, verbose_name=_("URL"))
+    category_name = models.CharField(max_length=300, verbose_name=_("카테고리 이름"))
+    category_group_code = models.CharField(max_length=100, verbose_name=_("카테고리 그룹 번호"))
+    category_group_name = models.CharField(max_length=100, verbose_name=_("카테고리 그룹 이름"))
+    telephone = models.CharField(max_length=100, verbose_name=_("전화번호"))
+    address = models.CharField(max_length=300, verbose_name=_("주소"))
+    road_address = models.CharField(max_length=300, verbose_name=_("도로명 주소"))
+    map_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=_("x좌표"))
+    map_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=_("y좌표"))
+    like = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="user_like_kakao_places_set",
+        blank=True,
+        verbose_name=_("좋아요"),
     )
 
     class Meta:
         db_table = "kakao_places"
-
-
-class Review(models.Model):
-    place_type = models.CharField(max_length=50)  # enum field / kakao & tour
-    place_tour = models.ForeignKey(TourPlace, null=True, on_delete=models.CASCADE)
-    place_kakao = models.ForeignKey(KakaoPlace, null=True, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    grade = models.PositiveSmallIntegerField()
-    text = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = "reviews"

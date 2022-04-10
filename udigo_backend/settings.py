@@ -41,7 +41,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.kakao",
 ]
-DJANGO_APPS = ["common", "users"]
+DJANGO_APPS = ["common", "users", "places", "reviews"]
 INSTALLED_APPS += THIRD_PARTY_APPS + DJANGO_APPS
 
 MIDDLEWARE = [
