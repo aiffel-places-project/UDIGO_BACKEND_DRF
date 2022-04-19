@@ -30,14 +30,14 @@ services:
 
   ml:
     build:
-      context: ../UDIGO_INFERRENCE_SERVER/
-      dockerfile: ../UDIGO_INFERRENCE_SERVER/Dockerfile
+      context: ../UDIGO_INFERENCE_SERVER/
+      dockerfile: ../UDIGO_INFERENCE_SERVER/Dockerfile
     container_name: udigo-ai
     command: "uvicorn app.main:app --reload --host=0.0.0.0 --port=5050"
     ports:
       - "5050:5050"
     volumes:
-      - ../UDIGO_INFERRENCE_SERVER/:/app
+      - ../UDIGO_INFERENCE_SERVER/:/app
 
 volumes:
   mysql-data: {}
