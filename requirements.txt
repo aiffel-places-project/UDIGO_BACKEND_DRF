@@ -6,6 +6,7 @@ django-cors-headers
 django-allauth
 django-request-logging
 dj-rest-auth
+drf-yasg
 python-decouple
 mysqlclient
 pytest

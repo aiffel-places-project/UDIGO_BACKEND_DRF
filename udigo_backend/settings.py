@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "corsheaders",
+    "drf_yasg",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -225,3 +226,9 @@ LOGGING = {
         },
     },
 }
+
+
+# AI SERVER
+ML_SERVER_URL = (
+    "http://172.26.0.3:5050/api/places/inference/"  # config("ML_SERVER_URL")
+)
