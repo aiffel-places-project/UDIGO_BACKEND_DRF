@@ -229,6 +229,4 @@ LOGGING = {
 
 
 # AI SERVER
-ML_SERVER_URL = (
-    "http://172.26.0.3:5050/api/places/inference/"  # config("ML_SERVER_URL")
-)
+ML_SERVER_URL = config("ML_SERVER_URL")
