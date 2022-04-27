@@ -229,4 +229,4 @@ LOGGING = {
 
 
 # AI SERVER
-ML_SERVER_URL = config("ML_SERVER_URL")
+ML_SERVER_URL = config("ML_SERVER_URL", "http://localhost:5050")
