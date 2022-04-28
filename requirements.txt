@@ -16,3 +16,4 @@ pytest-sugar
 pytest-mock
 mixer
 pillow
+requests

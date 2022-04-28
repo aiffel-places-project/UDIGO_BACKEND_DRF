@@ -1,8 +1,6 @@
-import pytest
-from unittest.mock import patch
 from django.urls import reverse
-from common.utils.tests import pytestmark
 from users.tests.mocks import create_kakao_access_mock
+from common.utils.tests import pytestmark
 
 
 def test_consent_to_kakao_access(client):
