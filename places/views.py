@@ -1,5 +1,6 @@
+from django.db.models import Q
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.response import Response
 from places.serializers import InferredPlaceImageSerializer
 from places.models import InferredPlaceImage
@@ -43,11 +44,23 @@ class PlaceImageClassificationView(GenericAPIView):
         )
         return response
 
+
+class PlaceImageCurationView(ListAPIView):
+    serializer_class = InferredPlaceImageSerializer
+    queryset = InferredPlaceImage.objects.all()
+
+    def get_queryset(self):
+        place = self.request.GET.get("place")
+
+        other_place = InferredPlaceImage.objects.filter(
+                ~Q(user=self.request.user) & Q(predicted_place_name=place)
+        )
+        if other_place_count := other_place.count() < 20:
+            other_place = other_place[:other_place_count]
+        return other_place
+
+
 class PlaceImageSearchHistoryView:
-    pass
-
-
-class PlaceImageCurationView:
     pass
 
 

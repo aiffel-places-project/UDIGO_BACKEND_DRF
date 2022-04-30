@@ -4,7 +4,6 @@ from rest_framework import serializers
 from places.models import InferredPlaceImage
 
 
-# TODO: serializer 수정
 class InferredPlaceImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = InferredPlaceImage
@@ -20,3 +19,4 @@ class InferredPlaceImageSerializer(serializers.ModelSerializer):
                 detail=serializers.as_serializer_error(exception)
             )
         return image
+    
