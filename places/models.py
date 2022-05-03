@@ -23,6 +23,7 @@ class InferredPlaceImage(CommonModel):
 
 
 class TourPlace(CommonModel):
+    id = models.BigIntegerField(primary_key=True, db_index=True)
     address = models.CharField(max_length=300, null=True, verbose_name=_("주소"))
     areacode = models.PositiveSmallIntegerField(verbose_name=_("지역번호"))
     cat1 = models.CharField(max_length=50, verbose_name=_("카테고리1"))
@@ -53,6 +54,7 @@ class TourPlace(CommonModel):
 
 
 class KakaoPlace(CommonModel):
+    id = models.BigIntegerField(primary_key=True, db_index=True)
     title = models.CharField(max_length=200, verbose_name=_("장소 이름"))
     place_url = models.CharField(max_length=500, verbose_name=_("URL"))
     category_name = models.CharField(max_length=300, verbose_name=_("카테고리 이름"))
