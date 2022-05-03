@@ -82,15 +82,9 @@ class KaKaoPlaceLikeView(ListCreateAPIView):
     serializer_class = KakaoPlaceSerializer
     queryset = KakaoPlace.objects.all()
 
-    def post(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        if response := like_or_dislike(request, queryset):
-            return response
-        return super().post(request)
-
-    def get_queryset(self):
-        if self.request.method == "GET":
-            user = self.request.user
-            queryset = KakaoPlace.objects.filter(like__in=[user])
-            return queryset
-        return super().get_queryset()
+        other_place = InferredPlaceImage.objects.filter(
+                ~Q(user=self.request.user) & Q(predicted_place_name=place)
+        )
+        if other_place_count := other_place.count() < 20:
+            other_place = other_place[:other_place_count]
+        return other_place
