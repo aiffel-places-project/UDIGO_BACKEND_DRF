@@ -1,10 +1,11 @@
 from django.db.models import Q
 from rest_framework import status
-from rest_framework.generics import GenericAPIView, ListAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView
 from rest_framework.response import Response
-from places.serializers import InferredPlaceImageSerializer
-from places.models import InferredPlaceImage
-from places.service import request_inference
+from common.permissions import IsMe
+from places.serializers import InferredPlaceImageSerializer, KakaoPlaceSerializer
+from places.models import InferredPlaceImage, KakaoPlace
+from places.service import request_inference, like_or_dislike
 
 
 class PlaceImageClassificationView(GenericAPIView):
@@ -53,16 +54,37 @@ class PlaceImageCurationView(ListAPIView):
         place = self.request.GET.get("place")
 
         other_place = InferredPlaceImage.objects.filter(
-                ~Q(user=self.request.user) & Q(predicted_place_name=place)
+            ~Q(user=self.request.user) & Q(predicted_place_name=place)
         )
         if other_place_count := other_place.count() < 20:
             other_place = other_place[:other_place_count]
         return other_place
 
 
-class PlaceImageSearchHistoryView:
-    pass
+class PlaceImageHistoryView(ListAPIView):
+    serializer_class = InferredPlaceImageSerializer
+    permission_classes = [IsMe]
+
+    def get_queryset(self):
+        queryset = InferredPlaceImage.objects.objects.filter(
+            user=self.request.user
+        ).order_by("-created_at")
+        return queryset
 
 
-class PlaceLikeView:
-    pass
+class KaKaoPlaceLikeView(ListCreateAPIView):
+    """
+    카카오 API에서 가져온 장소 정보
+    POST: 좋아요를 누르면 DB에 장소를 저장 및 좋아요 추가
+    GET: 좋아요를 누른 장소 READ
+    """
+
+    serializer_class = KakaoPlaceSerializer
+    queryset = KakaoPlace.objects.all()
+
+        other_place = InferredPlaceImage.objects.filter(
+                ~Q(user=self.request.user) & Q(predicted_place_name=place)
+        )
+        if other_place_count := other_place.count() < 20:
+            other_place = other_place[:other_place_count]
+        return other_place
