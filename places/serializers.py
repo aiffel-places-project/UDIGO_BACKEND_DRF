@@ -1,6 +1,5 @@
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from places.models import InferredPlaceImage, KakaoPlace
+from places.models import InferredPlaceImage, KakaoPlace, TourPlace
 from common.utils.errors import raise_serializer_error
 
 
@@ -27,6 +26,21 @@ class KakaoPlaceSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         for key in attrs.keys():
             if key not in KakaoPlace.__dict__.keys():
+                raise_serializer_error("올바른 데이터를 넣어주세요.")
+
+        attrs["like"].append(self.context["request"].user)
+        return attrs
+
+
+class TourPlaceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TourPlace
+        fields = "__all__"
+        read_only_fields = ("created_at", "updated_at")
+
+    def validate(self, attrs):
+        for key in attrs.keys():
+            if key not in TourPlace.__dict__.keys():
                 raise_serializer_error("올바른 데이터를 넣어주세요.")
 
         attrs["like"].append(self.context["request"].user)

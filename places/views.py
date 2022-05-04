@@ -3,9 +3,13 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from common.permissions import IsMe
-from places.serializers import InferredPlaceImageSerializer, KakaoPlaceSerializer
-from places.models import InferredPlaceImage, KakaoPlace
-from places.service import request_inference, like_or_dislike
+from places.serializers import (
+    InferredPlaceImageSerializer,
+    KakaoPlaceSerializer,
+    TourPlaceSerializer,
+)
+from places.models import InferredPlaceImage, KakaoPlace, TourPlace
+from places.service import request_inference, like_or_remove_like
 
 
 class PlaceImageClassificationView(GenericAPIView):
@@ -81,10 +85,11 @@ class KaKaoPlaceLikeView(ListCreateAPIView):
 
     serializer_class = KakaoPlaceSerializer
     queryset = KakaoPlace.objects.all()
+    permission_classes = [IsMe]
 
     def post(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        if response := like_or_dislike(request, queryset):
+        if response := like_or_remove_like(request, queryset):
             return response
         return super().post(request)
 
@@ -92,5 +97,30 @@ class KaKaoPlaceLikeView(ListCreateAPIView):
         if self.request.method == "GET":
             user = self.request.user
             queryset = KakaoPlace.objects.filter(like__in=[user])
+            return queryset
+        return super().get_queryset()
+
+
+class TourPlaceLikeView(ListCreateAPIView):
+    """
+    Tour API에서 가져온 장소 정보
+    POST: 좋아요를 누르면 DB에 장소를 저장 및 좋아요 추가
+    GET: 좋아요를 누른 장소 READ
+    """
+
+    serializer_class = TourPlaceSerializer
+    queryset = TourPlace.objects.all()
+    permission_classes = [IsMe]
+
+    def post(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if response := like_or_remove_like(request, queryset):
+            return response
+        return super().post(request)
+
+    def get_queryset(self):
+        if self.request.method == "GET":
+            user = self.request.user
+            queryset = TourPlace.objects.filter(like__in=[user])
             return queryset
         return super().get_queryset()
