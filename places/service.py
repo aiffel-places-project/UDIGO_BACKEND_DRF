@@ -10,7 +10,7 @@ def request_inference(self, image):
     return data
 
 
-def like_or_dislike(request, queryset=None):
+def like_or_remove_like(request, queryset=None):
     id = request.data.get("id")
     user = request.user
     queryset = queryset.filter(id=id)
